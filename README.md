@@ -1,5 +1,11 @@
 # KillerTab
 
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=181818)
+![HTML5](https://img.shields.io/badge/HTML5-C03919?style=for-the-badge&logo=html5&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS-663399?style=for-the-badge&logo=css&logoColor=white)
+[![Versi KillerTab 1.3.0](https://img.shields.io/badge/Versi-v1.3.0-245844?style=for-the-badge)](./manifest.json)
+![Manifest V3](https://img.shields.io/badge/Manifest-V3-344563?style=for-the-badge&logo=googlechrome&logoColor=white)
+
 Ekstensi Manifest V3 untuk Chrome, Brave, dan browser Chromium yang kompatibel (Chromium 121+). Dibuat oleh **Akira Keiji** dengan JavaScript dan CSS tanpa dependensi.
 
 ## Pasang
