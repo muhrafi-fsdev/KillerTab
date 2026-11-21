@@ -3,6 +3,7 @@ import {
   normalizeSettings, normalizeSite, PAUSE_MINUTES, sameLoadedPage, SITE_LIMIT
 } from "./engine.js"
 import { changeAdblockSite, configureAdblock, restoreAdblock } from "./ads.js"
+import { changeBlockedDomain, configureProtection, restoreProtection } from "./protection.js"
 
 const ALARM = "next-tab-sleep"
 const AUTO_BATCH = 4
@@ -242,6 +243,10 @@ async function command(message) {
   if (message.type === "adblock-exempt" || message.type === "adblock-remove") {
     return changeAdblockSite(message.site, message.type === "adblock-exempt")
   }
+  if (message.type === "link-protection") return configureProtection(message.enabled)
+  if (message.type === "link-block" || message.type === "link-unblock") {
+    return changeBlockedDomain(message.domain, message.type === "link-block")
+  }
   await loadSettings()
   switch (message.type) {
     case "sleep-now":
@@ -279,6 +284,7 @@ async function command(message) {
 
 function start() {
   run(restoreAdblock)
+  run(restoreProtection)
   enqueue({ full: true })
 }
 

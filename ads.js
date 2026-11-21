@@ -1,52 +1,28 @@
 import { coversSite, normalizeSite, SITE_LIMIT } from "./engine.js"
 
+import { configureRuleset, readRuleDomains, restoreRuleset, rulesetEnabled } from "./rulesets.js"
+
 const RULESET = "ads"
+const STORAGE_KEY = "adblockEnabled"
 const EXCEPTION_RULE = 101
 
-async function rulesetEnabled() {
-  return (await chrome.declarativeNetRequest.getEnabledRulesets()).includes(RULESET)
-}
-
-async function setRuleset(enabled) {
-  await chrome.declarativeNetRequest.updateEnabledRulesets(
-    enabled ? { enableRulesetIds: [RULESET] } : { disableRulesetIds: [RULESET] }
-  )
-}
-
-async function exceptionDomains() {
-  const rules = await chrome.declarativeNetRequest.getDynamicRules({ ruleIds: [EXCEPTION_RULE] })
-  return rules.find(rule => rule.id === EXCEPTION_RULE)?.condition.requestDomains ?? []
-}
-
 export async function readAdblock() {
-  const [enabled, sites] = await Promise.all([rulesetEnabled(), exceptionDomains()])
+  const [enabled, sites] = await Promise.all([rulesetEnabled(RULESET), readRuleDomains(EXCEPTION_RULE)])
   return { enabled, sites }
 }
 
-export async function restoreAdblock() {
-  const { adblockEnabled } = await chrome.storage.local.get("adblockEnabled")
-  if (typeof adblockEnabled === "boolean" && adblockEnabled !== await rulesetEnabled()) {
-    await setRuleset(adblockEnabled)
-  }
+export function restoreAdblock() {
+  return restoreRuleset(RULESET, STORAGE_KEY)
 }
 
-export async function configureAdblock(enabled) {
-  if (typeof enabled !== "boolean") return { ok: false }
-  const previous = await rulesetEnabled()
-  if (previous !== enabled) await setRuleset(enabled)
-  try {
-    await chrome.storage.local.set({ adblockEnabled: enabled })
-  } catch (error) {
-    if (previous !== enabled) await setRuleset(previous)
-    throw error
-  }
-  return { ok: true }
+export function configureAdblock(enabled) {
+  return configureRuleset(RULESET, STORAGE_KEY, enabled)
 }
 
 export async function changeAdblockSite(value, add) {
   const site = normalizeSite(value)
   if (!site || site !== value || site.startsWith("[")) return { ok: false, reason: "site" }
-  const existing = await exceptionDomains()
+  const existing = await readRuleDomains(EXCEPTION_RULE)
   if (add && coversSite(site, existing)) return { ok: true }
   if (!add && !existing.includes(site)) return { ok: true }
   if (add && existing.length >= SITE_LIMIT) return { ok: false, reason: "limit" }

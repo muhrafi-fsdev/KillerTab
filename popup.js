@@ -3,6 +3,7 @@ import {
   normalizeSettings, PAUSE_MINUTES, tabSite
 } from "./engine.js"
 import { readAdblock } from "./ads.js"
+import { inspectLink, readPattern, readProtection } from "./protection.js"
 
 const el = id => document.getElementById(id)
 const engine = document.querySelector(".engine")
@@ -254,6 +255,127 @@ function feedbackLine() {
   const line = node("p", "", "dialog-feedback")
   line.setAttribute("role", "status")
   return line
+}
+
+async function showLinkProtection() {
+  openDialog("Proteksi Link")
+  const loading = node("p", "Memuat proteksi…")
+  content.append(loading)
+  let pattern, state
+  try {
+    [pattern, state] = await Promise.all([readPattern(), readProtection()])
+  } catch {
+    if (loading.isConnected) loading.textContent = "Proteksi link tidak bisa dimuat. Buka ulang panel untuk mencoba lagi."
+    return
+  }
+  if (!loading.isConnected || !dialog.open) return
+
+  const automatic = button("", () => save({ type: "link-protection", enabled: !state.enabled }))
+  automatic.setAttribute("aria-pressed", String(state.enabled))
+  const form = node("form", "", "site-form")
+  const label = node("label", "Tempel URL yang ingin diperiksa")
+  const input = document.createElement("input")
+  input.id = "check-url"
+  input.type = "text"
+  input.inputMode = "url"
+  input.placeholder = "https://contoh.com"
+  input.autocomplete = "off"
+  input.spellcheck = false
+  input.maxLength = 8192
+  input.required = true
+  label.htmlFor = input.id
+  const submit = node("button", "Periksa", "secondary")
+  submit.type = "submit"
+  form.append(label, input, submit)
+  const result = node("div", "", "link-result")
+  result.hidden = true
+  result.setAttribute("role", "status")
+  const feedback = feedbackLine()
+  const blocked = document.createElement("ul")
+  const empty = node("p", "Belum ada domain tambahan.")
+  const current = button("Periksa tab ini", async () => {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+      check(tab?.url)
+    } catch {
+      check()
+    }
+  })
+  let checkedURL
+  let waiting = false
+
+  function check(value) {
+    if (!form.isConnected || !dialog.open) return
+    checkedURL = value
+    const report = inspectLink(value, pattern, state)
+    result.hidden = false
+    const title = !report ? "Masukkan URL HTTP atau HTTPS yang valid."
+      : report.blocked ? "Cocok dengan aturan blokir"
+        : report.reasons.length ? "Ada tanda mencurigakan" : "Tidak ada tanda yang dikenali"
+    result.replaceChildren(node("strong", title))
+    result.dataset.level = report?.blocked || report?.reasons.length ? "caution" : "neutral"
+    if (!report) return
+    result.append(node("code", report.host))
+    for (const reason of report.reasons) result.append(node("p", reason))
+    if (!report.reasons.length) result.append(node("p", "Hasil ini belum memastikan situs aman."))
+    if (report.blockable && !report.manualBlock) {
+      result.append(button(`Blokir ${report.host}`, () => save({ type: "link-block", domain: report.host })))
+    }
+  }
+
+  async function save(command) {
+    if (waiting) return
+    waiting = true
+    automatic.disabled = true
+    feedback.textContent = "Menyimpan…"
+    try {
+      const reply = await chrome.runtime.sendMessage(command)
+      if (!reply?.ok) {
+        feedback.textContent = reply?.reason === "limit" ? "Daftar blokir sudah penuh." : "Pengaturan belum tersimpan."
+        return
+      }
+      state = await readProtection()
+      if (!form.isConnected || !dialog.open) return
+      paint()
+      if (checkedURL !== undefined) check(checkedURL)
+      feedback.textContent = "Tersimpan. Aturan berlaku untuk navigasi berikutnya."
+      if (command.type !== "link-protection") input.focus()
+    } catch {
+      feedback.textContent = "Pengaturan belum bisa dibaca. Buka ulang panel untuk mengecek."
+    } finally {
+      waiting = false
+      automatic.disabled = false
+    }
+  }
+
+  function paint() {
+    automatic.textContent = state.enabled ? "Blokir pola aktif" : "Blokir pola nonaktif"
+    automatic.setAttribute("aria-pressed", String(state.enabled))
+    empty.hidden = state.blockedDomains.length > 0
+    blocked.replaceChildren(...state.blockedDomains.map(domain => {
+      const row = node("li", "", "item")
+      const remove = button("Hapus", () => save({ type: "link-unblock", domain }))
+      remove.setAttribute("aria-label", `Hapus blokir ${domain}`)
+      row.append(node("span", domain, "item-name"), remove)
+      return row
+    }))
+  }
+
+  form.addEventListener("submit", event => { event.preventDefault(); check(input.value) })
+  input.addEventListener("input", () => {
+    checkedURL = undefined
+    result.hidden = true
+    result.replaceChildren()
+  })
+  content.replaceChildren(
+    automatic,
+    node("p", "Blokir pola penyamaran domain yang dikenali. Pemeriksaan URL berjalan lokal tanpa membuka link."),
+    form, current, result,
+    node("h3", "Daftar blokir manual"),
+    node("p", "Domain dan subdomain di daftar ini tetap diblokir saat blokir pola dimatikan."),
+    empty, blocked, feedback
+  )
+  paint()
 }
 
 async function loadAdblock() {
@@ -601,6 +723,7 @@ el("sleep-now").addEventListener("click", showSleepNow)
 el("saver-settings").addEventListener("click", showSaverSettings)
 adToggle.addEventListener("change", toggleAdblock)
 el("adblock-sites").addEventListener("click", showAdblockSites)
+el("link-protection").addEventListener("click", showLinkProtection)
 liveMetrics.addEventListener("change", configureMonitoring)
 el("measure").addEventListener("click", () => updateMonitoring(true))
 document.querySelector(".help").addEventListener("click", showHelp)

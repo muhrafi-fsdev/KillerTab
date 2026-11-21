@@ -3,7 +3,7 @@
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=181818)
 ![HTML5](https://img.shields.io/badge/HTML5-C03919?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-663399?style=for-the-badge&logo=css&logoColor=white)
-[![Versi KillerTab 1.3.0](https://img.shields.io/badge/Versi-v1.3.0-245844?style=for-the-badge)](./manifest.json)
+[![Versi KillerTab 1.4.0](https://img.shields.io/badge/Versi-v1.4.0-245844?style=for-the-badge)](./manifest.json)
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-344563?style=for-the-badge&logo=googlechrome&logoColor=white)
 
 Ekstensi Manifest V3 untuk Chrome, Brave, dan browser Chromium yang kompatibel (Chromium 121+). Dibuat oleh **Akira Keiji** dengan JavaScript dan CSS tanpa dependensi.
@@ -36,5 +36,13 @@ Jika sudah memakai Tab Hening, salin isi folder hasil ekstrak ke folder ekstensi
 Adblock aktif secara default. Aturan bawaan Chromium memblokir permintaan sumber daya pihak ketiga ke daftar domain jaringan iklan yang disertakan di ZIP. Cakupannya berfokus pada jaringan tersebut. Iklan yang dikirim langsung dari situs, iklan di dalam aliran video, dan elemen sisa iklan di halaman bisa tetap terlihat.
 
 Buka tab situs yang perlu dikecualikan, lalu pilih **Pengecualian situs** di KillerTab. Setelah menambah atau menghapus pengecualian, muat ulang halaman. Pengecualian mencakup subdomain dan hanya berlaku untuk pemblokiran oleh KillerTab.
+
+## Proteksi Link
+
+- **Blokir pola** aktif secara default. Browser menolak navigasi utama yang menyisipkan salah satu domain resmi yang dikenali di awal atau di tengah host lain, misalnya `https://bca.co.id.contoh.test/`. Domain resmi yang ada dalam aturan dikecualikan. Browser bisa menampilkan pesan `ERR_BLOCKED_BY_CLIENT` saat aturan cocok.
+- Tempel URL HTTP/HTTPS atau klik **Periksa tab ini** untuk melihat host tujuan dan tanda mencurigakan. Pemeriksaan tidak membuka URL, mengikuti redirect, atau mengirimkannya ke layanan reputasi. Karakter internasional, alamat IP, HTTP, kredensial sebelum @, dan pemendek URL menjadi tanda untuk diperiksa, karena semuanya juga bisa dipakai secara sah.
+- Gunakan **Blokir [domain]** untuk memblokir navigasi ke domain dan subdomainnya. **Daftar blokir manual** tetap bekerja meski blokir pola dimatikan, dan tiap entri bisa dihapus dari panel yang sama.
+
+Proteksi Link memakai heuristik lokal dengan cakupan terbatas. Hasil pemeriksaan tanpa tanda mencurigakan belum memastikan situs aman.
 
 Semua pemrosesan berjalan di browser. Pengaturan disimpan secara lokal dan timer tab disimpan selama sesi. KillerTab tidak memuat skrip eksternal, menyuntikkan skrip ke situs, atau mengirim data ke server.

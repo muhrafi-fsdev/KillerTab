@@ -1,0 +1,288 @@
+[
+  {
+    "id": 1,
+    "priority": 100,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "resourceTypes": [
+        "main_frame"
+      ],
+      "excludedRequestDomains": [
+        "apple.com",
+        "bankmandiri.co.id",
+        "bca.co.id",
+        "bni.co.id",
+        "bri.co.id",
+        "facebook.com",
+        "github.com",
+        "google.com",
+        "klikbca.com",
+        "microsoft.com",
+        "paypal.com"
+      ],
+      "regexFilter": "^https?://([^/?#@]+@)?([a-z0-9_-]+\\.)*apple\\.com\\.[a-z0-9_-][a-z0-9_.-]*(:[0-9]+)?([/?#]|$)"
+    }
+  },
+  {
+    "id": 2,
+    "priority": 100,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "resourceTypes": [
+        "main_frame"
+      ],
+      "excludedRequestDomains": [
+        "apple.com",
+        "bankmandiri.co.id",
+        "bca.co.id",
+        "bni.co.id",
+        "bri.co.id",
+        "facebook.com",
+        "github.com",
+        "google.com",
+        "klikbca.com",
+        "microsoft.com",
+        "paypal.com"
+      ],
+      "regexFilter": "^https?://([^/?#@]+@)?([a-z0-9_-]+\\.)*bankmandiri\\.co\\.id\\.[a-z0-9_-][a-z0-9_.-]*(:[0-9]+)?([/?#]|$)"
+    }
+  },
+  {
+    "id": 3,
+    "priority": 100,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "resourceTypes": [
+        "main_frame"
+      ],
+      "excludedRequestDomains": [
+        "apple.com",
+        "bankmandiri.co.id",
+        "bca.co.id",
+        "bni.co.id",
+        "bri.co.id",
+        "facebook.com",
+        "github.com",
+        "google.com",
+        "klikbca.com",
+        "microsoft.com",
+        "paypal.com"
+      ],
+      "regexFilter": "^https?://([^/?#@]+@)?([a-z0-9_-]+\\.)*bca\\.co\\.id\\.[a-z0-9_-][a-z0-9_.-]*(:[0-9]+)?([/?#]|$)"
+    }
+  },
+  {
+    "id": 4,
+    "priority": 100,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "resourceTypes": [
+        "main_frame"
+      ],
+      "excludedRequestDomains": [
+        "apple.com",
+        "bankmandiri.co.id",
+        "bca.co.id",
+        "bni.co.id",
+        "bri.co.id",
+        "facebook.com",
+        "github.com",
+        "google.com",
+        "klikbca.com",
+        "microsoft.com",
+        "paypal.com"
+      ],
+      "regexFilter": "^https?://([^/?#@]+@)?([a-z0-9_-]+\\.)*bni\\.co\\.id\\.[a-z0-9_-][a-z0-9_.-]*(:[0-9]+)?([/?#]|$)"
+    }
+  },
+  {
+    "id": 5,
+    "priority": 100,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "resourceTypes": [
+        "main_frame"
+      ],
+      "excludedRequestDomains": [
+        "apple.com",
+        "bankmandiri.co.id",
+        "bca.co.id",
+        "bni.co.id",
+        "bri.co.id",
+        "facebook.com",
+        "github.com",
+        "google.com",
+        "klikbca.com",
+        "microsoft.com",
+        "paypal.com"
+      ],
+      "regexFilter": "^https?://([^/?#@]+@)?([a-z0-9_-]+\\.)*bri\\.co\\.id\\.[a-z0-9_-][a-z0-9_.-]*(:[0-9]+)?([/?#]|$)"
+    }
+  },
+  {
+    "id": 6,
+    "priority": 100,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "resourceTypes": [
+        "main_frame"
+      ],
+      "excludedRequestDomains": [
+        "apple.com",
+        "bankmandiri.co.id",
+        "bca.co.id",
+        "bni.co.id",
+        "bri.co.id",
+        "facebook.com",
+        "github.com",
+        "google.com",
+        "klikbca.com",
+        "microsoft.com",
+        "paypal.com"
+      ],
+      "regexFilter": "^https?://([^/?#@]+@)?([a-z0-9_-]+\\.)*facebook\\.com\\.[a-z0-9_-][a-z0-9_.-]*(:[0-9]+)?([/?#]|$)"
+    }
+  },
+  {
+    "id": 7,
+    "priority": 100,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "resourceTypes": [
+        "main_frame"
+      ],
+      "excludedRequestDomains": [
+        "apple.com",
+        "bankmandiri.co.id",
+        "bca.co.id",
+        "bni.co.id",
+        "bri.co.id",
+        "facebook.com",
+        "github.com",
+        "google.com",
+        "klikbca.com",
+        "microsoft.com",
+        "paypal.com"
+      ],
+      "regexFilter": "^https?://([^/?#@]+@)?([a-z0-9_-]+\\.)*github\\.com\\.[a-z0-9_-][a-z0-9_.-]*(:[0-9]+)?([/?#]|$)"
+    }
+  },
+  {
+    "id": 8,
+    "priority": 100,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "resourceTypes": [
+        "main_frame"
+      ],
+      "excludedRequestDomains": [
+        "apple.com",
+        "bankmandiri.co.id",
+        "bca.co.id",
+        "bni.co.id",
+        "bri.co.id",
+        "facebook.com",
+        "github.com",
+        "google.com",
+        "klikbca.com",
+        "microsoft.com",
+        "paypal.com"
+      ],
+      "regexFilter": "^https?://([^/?#@]+@)?([a-z0-9_-]+\\.)*google\\.com\\.[a-z0-9_-][a-z0-9_.-]*(:[0-9]+)?([/?#]|$)"
+    }
+  },
+  {
+    "id": 9,
+    "priority": 100,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "resourceTypes": [
+        "main_frame"
+      ],
+      "excludedRequestDomains": [
+        "apple.com",
+        "bankmandiri.co.id",
+        "bca.co.id",
+        "bni.co.id",
+        "bri.co.id",
+        "facebook.com",
+        "github.com",
+        "google.com",
+        "klikbca.com",
+        "microsoft.com",
+        "paypal.com"
+      ],
+      "regexFilter": "^https?://([^/?#@]+@)?([a-z0-9_-]+\\.)*klikbca\\.com\\.[a-z0-9_-][a-z0-9_.-]*(:[0-9]+)?([/?#]|$)"
+    }
+  },
+  {
+    "id": 10,
+    "priority": 100,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "resourceTypes": [
+        "main_frame"
+      ],
+      "excludedRequestDomains": [
+        "apple.com",
+        "bankmandiri.co.id",
+        "bca.co.id",
+        "bni.co.id",
+        "bri.co.id",
+        "facebook.com",
+        "github.com",
+        "google.com",
+        "klikbca.com",
+        "microsoft.com",
+        "paypal.com"
+      ],
+      "regexFilter": "^https?://([^/?#@]+@)?([a-z0-9_-]+\\.)*microsoft\\.com\\.[a-z0-9_-][a-z0-9_.-]*(:[0-9]+)?([/?#]|$)"
+    }
+  },
+  {
+    "id": 11,
+    "priority": 100,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "resourceTypes": [
+        "main_frame"
+      ],
+      "excludedRequestDomains": [
+        "apple.com",
+        "bankmandiri.co.id",
+        "bca.co.id",
+        "bni.co.id",
+        "bri.co.id",
+        "facebook.com",
+        "github.com",
+        "google.com",
+        "klikbca.com",
+        "microsoft.com",
+        "paypal.com"
+      ],
+      "regexFilter": "^https?://([^/?#@]+@)?([a-z0-9_-]+\\.)*paypal\\.com\\.[a-z0-9_-][a-z0-9_.-]*(:[0-9]+)?([/?#]|$)"
+    }
+  }
+]

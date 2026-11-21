@@ -210,6 +210,17 @@ legend { margin-bottom: 5px; padding: 0; color: var(--muted); font-size: 11px; f
 .adblock .switch input:checked + .track { border-color: #98ddc3; background: #98ddc3; }
 .adblock .switch input:checked + .track::after { background: #163c38; }
 .adblock .text-action { grid-column: 1 / -1; justify-self: start; color: #a6e0cc; }
+.protection-entry { margin-top: 5px; }
+.protection-icon::before {
+  inset: 6px 7px;
+  background: var(--accent);
+  clip-path: polygon(50% 0, 100% 18%, 100% 55%, 84% 80%, 50% 100%, 16% 80%, 0 55%, 0 18%);
+}
+.link-result { margin-top: 5px; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: #1d1e30; }
+.link-result[data-level="caution"] { border-color: #79613d; }
+.link-result[data-level="caution"] strong { color: #ffd59a; }
+.link-result code { display: block; margin: 3px 0 5px; overflow-wrap: anywhere; }
+.link-result p { margin-bottom: 3px; }
 .text-action {
   min-height: 25px;
   margin: 0;
