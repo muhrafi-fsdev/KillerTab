@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "domainType": "thirdParty",
+      "resourceTypes": ["script", "image", "sub_frame", "xmlhttprequest", "ping", "media", "stylesheet", "websocket", "other"],
+      "requestDomains": [
+        "2mdn.net",
+        "33across.com",
+        "adform.net",
+        "adnxs.com",
+        "adroll.com",
+        "adsrvr.org",
+        "advertising.com",
+        "amazon-adsystem.com",
+        "bidswitch.net",
+        "casalemedia.com",
+        "contextweb.com",
+        "criteo.com",
+        "criteo.net",
+        "doubleclick.net",
+        "googleadservices.com",
+        "googlesyndication.com",
+        "indexww.com",
+        "lijit.com",
+        "media.net",
+        "mgid.com",
+        "openx.net",
+        "outbrain.com",
+        "pubmatic.com",
+        "revcontent.com",
+        "rubiconproject.com",
+        "sharethrough.com",
+        "smaato.net",
+        "smartadserver.com",
+        "spotxchange.com",
+        "taboola.com",
+        "yieldmo.com"
+      ]
+    }
+  }
+]

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="popup.css">
+  <script type="module" src="popup.js"></script>
+  <title>KillerTab</title>
+</head>
+<body class="shell">
+  <header class="masthead">
+    <div class="brand">
+      <img src="icons/48.png" width="36" height="36" alt="">
+      <h1>Killer<span>Tab</span></h1>
+    </div>
+    <button class="help" type="button" aria-label="Cara kerja" title="Cara kerja">?</button>
+  </header>
+
+  <main>
+    <section class="engine" aria-labelledby="engine-title">
+      <div class="engine-top">
+        <div>
+          <h2 id="engine-title">Tidur otomatis</h2>
+          <p id="engine-status" role="status">Memuat pengaturan…</p>
+        </div>
+        <label class="switch">
+          <input id="engine-switch" type="checkbox" role="switch" aria-label="Tidur otomatis" disabled>
+          <span class="track"></span>
+        </label>
+      </div>
+      <fieldset id="delay-picks" disabled>
+        <legend>Jeda sebelum tidur</legend>
+        <div class="choices">
+          <label><input name="delay" type="radio" value="0"><span>Langsung</span></label>
+          <label><input name="delay" type="radio" value="5"><span>5 menit</span></label>
+          <label><input name="delay" type="radio" value="15"><span>15 menit</span></label>
+          <label><input name="delay" type="radio" value="30"><span>30 menit</span></label>
+        </div>
+      </fieldset>
+      <div id="next-tab" class="queue" hidden>
+        <span class="queue-icon" aria-hidden="true"></span>
+        <div class="queue-copy">
+          <strong id="queue-title">Tab berikutnya</strong>
+          <span id="queue-label"></span>
+        </div>
+        <time id="queue-time" hidden></time>
+      </div>
+    </section>
+
+    <div class="engine-actions" role="group" aria-label="Kontrol penghematan">
+      <button id="sleep-now" type="button" aria-haspopup="dialog">Tidurkan sekarang</button>
+      <button id="saver-settings" type="button" aria-haspopup="dialog">Jeda &amp; situs</button>
+    </div>
+
+    <section class="adblock" aria-labelledby="adblock-title">
+      <div class="adblock-copy">
+        <h2 id="adblock-title">Blokir iklan</h2>
+        <p id="adblock-status" role="status">Memuat status…</p>
+      </div>
+      <label class="switch">
+        <input id="adblock-switch" type="checkbox" role="switch" aria-label="Blokir iklan" disabled>
+        <span class="track"></span>
+      </label>
+      <button id="adblock-sites" class="text-action" type="button" aria-haspopup="dialog">Pengecualian situs</button>
+    </section>
+
+    <p id="error" class="error" role="alert" hidden></p>
+
+    <section class="metrics" aria-labelledby="metrics-title">
+      <div class="metrics-header">
+        <h2 id="metrics-title">Beban sistem</h2>
+        <div class="metrics-options">
+          <button id="measure" class="text-action" type="button" hidden>Ukur</button>
+          <label class="monitor-control"><input id="live-metrics" type="checkbox" disabled> Live</label>
+        </div>
+      </div>
+      <div class="metric-list">
+        <div class="metric">
+          <div class="metric-copy">
+            <span class="metric-name">RAM</span>
+            <span class="metric-info" id="ram-info">RAM sistem</span>
+          </div>
+          <strong class="metric-value" id="ram-value">—</strong>
+          <meter id="ram-meter" min="0" max="100" value="0" aria-label="Persentase RAM terpakai" hidden></meter>
+        </div>
+        <div class="metric cpu">
+          <div class="metric-copy">
+            <span class="metric-name">CPU</span>
+            <span class="metric-info" id="cpu-info">CPU sistem</span>
+          </div>
+          <strong class="metric-value" id="cpu-value">—</strong>
+          <meter id="cpu-meter" min="0" max="100" value="0" aria-label="Persentase CPU terpakai" hidden></meter>
+        </div>
+      </div>
+    </section>
+
+    <nav class="inventory" aria-label="Inventaris browser">
+      <button id="tabs-button" class="inventory-row" type="button" aria-haspopup="dialog">
+        <span class="inventory-icon tab-icon" aria-hidden="true"></span>
+        <span><strong id="tab-total">Tab terbuka</strong><small id="tab-sleeping">Memuat…</small></span>
+        <span class="chevron" aria-hidden="true">›</span>
+      </button>
+      <button id="extensions-button" class="inventory-row" type="button" aria-haspopup="dialog">
+        <span class="inventory-icon extension-icon" aria-hidden="true"></span>
+        <span><strong id="extension-total">Ekstensi</strong><small id="extension-active">Lihat daftar</small></span>
+        <span class="chevron" aria-hidden="true">›</span>
+      </button>
+    </nav>
+  </main>
+
+  <dialog id="detail" aria-labelledby="detail-title">
+    <header class="dialog-header">
+      <h2 id="detail-title"></h2>
+      <form method="dialog"><button type="submit" class="close" aria-label="Tutup">×</button></form>
+    </header>
+    <div id="detail-content" class="dialog-content"></div>
+  </dialog>
+</body>
+</html>

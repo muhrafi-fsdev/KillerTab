@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "minimum_chrome_version": "121",
+  "name": "KillerTab",
+  "version": "1.3.0",
+  "author": "Akira Keiji",
+  "description": "Tidurkan tab latar, pantau beban sistem, dan blokir jaringan iklan pihak ketiga.",
+  "permissions": [
+    "alarms",
+    "storage",
+    "tabs",
+    "system.cpu",
+    "system.memory",
+    "declarativeNetRequest"
+  ],
+  "optional_permissions": [
+    "management"
+  ],
+  "incognito": "not_allowed",
+  "background": {
+    "service_worker": "worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "KillerTab",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png"
+    }
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ads",
+        "enabled": true,
+        "path": "rules/ads.json"
+      }
+    ]
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+K"
+      }
+    }
+  }
+}
