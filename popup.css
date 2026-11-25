@@ -194,6 +194,25 @@ legend { margin-bottom: 5px; padding: 0; color: var(--muted); font-size: 11px; f
 }
 .engine-actions button:hover { background: var(--accent-soft); }
 
+.cleanup-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 8px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #202039;
+}
+.cleanup-copy { flex: 1 1 130px; min-width: 0; }
+.cleanup-copy h2 { font-size: 13px; }
+.cleanup-copy p { color: var(--muted); font-size: 11px; }
+.cleanup-option { display: flex; align-items: flex-start; gap: 7px; margin: 8px 0; }
+.cleanup-option input { flex: none; margin: 3px 0 0; accent-color: var(--accent); }
+.secondary.cleanup-primary { background: var(--accent); border-color: var(--accent); color: #251e3a; }
+
 .adblock {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

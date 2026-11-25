@@ -1,9 +1,10 @@
 import {
-  canSleep, coversSite, DEFAULTS, dueTime, isProtected, isRunning, MANUAL_BATCH,
+  canCloseSleepingTab, canSleep, coversSite, DEFAULTS, dueTime, isProtected, isRunning, isSleeping, MANUAL_BATCH,
   normalizeSettings, PAUSE_MINUTES, tabSite
 } from "./engine.js"
 import { readAdblock } from "./ads.js"
 import { inspectLink, readPattern, readProtection } from "./protection.js"
+import { CACHE_PERMISSION } from "./cleanup.js"
 
 const el = id => document.getElementById(id)
 const engine = document.querySelector(".engine")
@@ -75,7 +76,9 @@ async function loadSnapshot() {
     renderQueue()
     if (monitorChanged) updateMonitoring()
     el("tab-total").textContent = `${tabs.length} tab terbuka`
-    el("tab-sleeping").textContent = `${tabs.filter(tab => tab.discarded).length} sedang tidur`
+    el("tab-sleeping").textContent = `${tabs.filter(isSleeping).length} sedang tidur`
+    const cleanable = tabs.filter(tab => canCloseSleepingTab(tab, settings.protectedSites)).length
+    el("cleanup-count").textContent = `${cleanable} tab tidur bisa ditutup · Cache web`
   } catch {
     if (version === snapshotVersion) error("Status tab gagal dimuat. Buka ulang popup untuk mencoba lagi.")
   }
@@ -255,6 +258,100 @@ function feedbackLine() {
   const line = node("p", "", "dialog-feedback")
   line.setAttribute("role", "status")
   return line
+}
+
+function cleanupOption(id, text) {
+  const label = node("label", "", "cleanup-option")
+  const input = document.createElement("input")
+  input.type = "checkbox"
+  input.id = id
+  input.checked = true
+  label.append(input, node("span", text))
+  return { label, input }
+}
+
+function showCleanup() {
+  openDialog("Bersihkan browser")
+  const close = cleanupOption("close-sleeping", "Tutup tab yang masih tidur")
+  const cache = cleanupOption("clear-web-cache", "Hapus cache web semua waktu")
+  const description = node("p", "Tab tidur akan ditutup dari semua jendela di profil ini. Tab aktif, sematan, dan situs yang dilindungi dilewati.")
+  const scope = node("p", "Pembersihan cache hanya mencakup file web sementara.")
+  const feedback = feedbackLine()
+  const grant = button("Izinkan akses cache", requestCacheAccess)
+  const start = button("Bersihkan sekarang", execute)
+  start.className = "secondary cleanup-primary"
+  let permitted = false
+  let checkingPermission = true
+  let busy = false
+
+  function paint() {
+    grant.hidden = permitted || !cache.input.checked
+    grant.disabled = busy || checkingPermission
+    start.disabled = busy || (!close.input.checked && !cache.input.checked) || (cache.input.checked && !permitted)
+    close.input.disabled = cache.input.disabled = busy
+  }
+
+  async function requestCacheAccess() {
+    busy = true
+    paint()
+    try {
+      permitted = await chrome.permissions.request(CACHE_PERMISSION)
+      feedback.textContent = permitted
+        ? "Akses cache diberikan. Klik Bersihkan sekarang untuk menjalankan."
+        : "Izin belum diberikan. Kosongkan pilihan cache untuk menutup tab saja."
+    } catch {
+      feedback.textContent = "Izin cache tidak bisa diminta. Coba lagi."
+    } finally {
+      busy = false
+      paint()
+      if (permitted && start.isConnected && dialog.open) start.focus()
+    }
+  }
+
+  async function execute() {
+    if (start.disabled) return
+    const closeTabs = close.input.checked
+    busy = true
+    paint()
+    feedback.textContent = "Sedang membersihkan…"
+    try {
+      const result = await chrome.runtime.sendMessage({
+        type: "cleanup", closeTabs, clearCache: cache.input.checked
+      })
+      if (!result?.ok) throw new Error("Cleanup failed")
+      const messages = []
+      if (closeTabs) {
+        messages.push(`${result.closed} tab ditutup.`)
+        if (result.failed) messages.push(`${result.failed} tab gagal ditutup.`)
+        if (result.skipped) messages.push(`${result.skipped} tab berubah atau sudah ditutup.`)
+        if (result.tabsFailed) messages.push("Pemindaian tab terhenti.")
+      }
+      if (result.cache === "cleared") messages.push("Cache web dibersihkan.")
+      if (result.cache === "failed") messages.push("Cache gagal dibersihkan.")
+      if (result.cache === "permission") {
+        permitted = false
+        messages.push("Izin cache belum tersedia.")
+      }
+      feedback.textContent = messages.join(" ")
+      if (closeTabs) void loadSnapshot()
+    } catch {
+      feedback.textContent = "Hasil pembersihan tidak dapat dibaca. Periksa ulang sebelum mencoba lagi."
+    } finally {
+      busy = false
+      paint()
+    }
+  }
+
+  close.input.addEventListener("change", paint)
+  cache.input.addEventListener("change", paint)
+  content.append(description, close.label, cache.label, scope, grant, start, feedback)
+  paint()
+  void chrome.permissions.contains(CACHE_PERMISSION).then(enabled => {
+    permitted = enabled
+  }).catch(() => {}).finally(() => {
+    checkingPermission = false
+    if (start.isConnected && dialog.open) paint()
+  })
 }
 
 async function showLinkProtection() {
@@ -615,6 +712,7 @@ function item(label, status, action) {
 
 function tabStatus(tab) {
   if (tab.discarded) return "Tidur"
+  if (tab.frozen) return "Freeze"
   if (tab.active) return "Aktif"
   if (tab.pinned) return "Disematkan"
   if (tab.audible) return "Memutar audio"
@@ -721,6 +819,7 @@ el("tabs-button").addEventListener("click", showTabs)
 el("extensions-button").addEventListener("click", showExtensions)
 el("sleep-now").addEventListener("click", showSleepNow)
 el("saver-settings").addEventListener("click", showSaverSettings)
+el("cleanup-button").addEventListener("click", showCleanup)
 adToggle.addEventListener("change", toggleAdblock)
 el("adblock-sites").addEventListener("click", showAdblockSites)
 el("link-protection").addEventListener("click", showLinkProtection)
@@ -739,9 +838,10 @@ chrome.storage.onChanged.addListener(changes => {
   if ("adblockEnabled" in changes && !document.hidden) void loadAdblock()
 })
 chrome.tabs.onUpdated.addListener((id, change) => {
-  if (["title", "status", "discarded", "pinned", "audible"].some(key => key in change)) scheduleSnapshot()
+  if (["title", "status", "discarded", "frozen", "pinned", "audible", "autoDiscardable", "splitViewId"].some(key => key in change)) scheduleSnapshot()
 })
 chrome.tabs.onActivated.addListener(scheduleSnapshot)
+chrome.tabs.onHighlighted.addListener(scheduleSnapshot)
 chrome.tabs.onCreated.addListener(scheduleSnapshot)
 chrome.tabs.onRemoved.addListener(scheduleSnapshot)
 chrome.tabs.onReplaced.addListener(scheduleSnapshot)

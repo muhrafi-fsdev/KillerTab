@@ -4,6 +4,7 @@ import {
 } from "./engine.js"
 import { changeAdblockSite, configureAdblock, restoreAdblock } from "./ads.js"
 import { changeBlockedDomain, configureProtection, restoreProtection } from "./protection.js"
+import { cleanup } from "./cleanup.js"
 
 const ALARM = "next-tab-sleep"
 const AUTO_BATCH = 4
@@ -249,6 +250,8 @@ async function command(message) {
   }
   await loadSettings()
   switch (message.type) {
+    case "cleanup":
+      return cleanup(message, settings.protectedSites, id => pending?.resets.has(id))
     case "sleep-now":
     case "sleep-duplicates":
       return sleepNow(message.type === "sleep-duplicates")

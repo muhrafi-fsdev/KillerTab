@@ -3,7 +3,7 @@
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=181818)
 ![HTML5](https://img.shields.io/badge/HTML5-C03919?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-663399?style=for-the-badge&logo=css&logoColor=white)
-[![Versi KillerTab 1.4.0](https://img.shields.io/badge/Versi-v1.4.0-245844?style=for-the-badge)](./manifest.json)
+[![Versi KillerTab 1.5.0](https://img.shields.io/badge/Versi-v1.5.0-245844?style=for-the-badge)](./manifest.json)
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-344563?style=for-the-badge&logo=googlechrome&logoColor=white)
 
 Ekstensi Manifest V3 untuk Chrome, Brave, dan browser Chromium yang kompatibel (Chromium 121+). Dibuat oleh **Akira Keiji** dengan JavaScript dan CSS tanpa dependensi.
@@ -30,6 +30,12 @@ Jika sudah memakai Tab Hening, salin isi folder hasil ekstrak ke folder ekstensi
 - Persentase RAM dan CPU mengukur beban seluruh sistem. Mode **Live** memperbarui meter setiap lima detik selama panel utama terlihat. Matikan **Live**, lalu klik **Ukur** untuk mengambil satu sampel saat dibutuhkan.
 - Mesin tidur otomatis bergerak saat ada perubahan tab atau alarm. Sampai empat tab diproses per putaran otomatis dengan jeda minimal 30 detik jika masih ada antrean yang siap.
 - Gunakan **Alt + Shift + K** untuk membuka popup jika shortcut tersedia. Sesuaikan di menu **Keyboard shortcuts** pada halaman ekstensi.
+
+## Bersihkan browser
+
+- Buka **Bersihkan…** dan pilih **Tutup tab yang masih tidur**, **Hapus cache web semua waktu**, atau keduanya. Klik **Bersihkan sekarang** untuk menjalankannya.
+- Pembersihan tab mencakup semua jendela profil ini. KillerTab memeriksa ulang status tab sebelum menutupnya dan melewati tab aktif, tab terpilih, tab sematan, tab dengan audio, serta situs yang dilindungi. Deteksi status freeze bawaan browser tersedia di Chromium 132 ke atas. Tab yang ditidurkan dengan `discard` tetap terdeteksi pada versi yang didukung sejak Chromium 121.
+- Pada pemakaian pertama, klik **Izinkan akses cache**. Pembersihan menghapus cache web biasa, dengan riwayat, cookie, sandi, dan penyimpanan situs tetap tersimpan. Setelah selesai, panel menampilkan jumlah tab yang ditutup dan status cache.
 
 ## Blokir iklan
 

@@ -60,7 +60,7 @@ export function isProtected(tab, sites) {
   return sites.length > 0 && coversSite(tabSite(tab), sites)
 }
 
-export function canSleep(tab, sites = []) {
+function isEligibleBackgroundTab(tab, sites) {
   return Number.isInteger(tab?.id)
     && tab.id >= 0
     && /^https?:\/\//i.test(tab.url ?? "")
@@ -68,12 +68,22 @@ export function canSleep(tab, sites = []) {
     && !tab.pinned
     && !tab.audible
     && !tab.incognito
-    && !tab.discarded
     && tab.autoDiscardable !== false
-    && tab.status === "complete"
     && !tab.pendingUrl
     && !(tab.splitViewId >= 0)
     && !isProtected(tab, sites)
+}
+
+export function canSleep(tab, sites = []) {
+  return isEligibleBackgroundTab(tab, sites) && !tab.discarded && tab.status === "complete"
+}
+
+export function isSleeping(tab) {
+  return tab?.discarded === true || tab?.frozen === true
+}
+
+export function canCloseSleepingTab(tab, sites = []) {
+  return isSleeping(tab) && isEligibleBackgroundTab(tab, sites) && !tab.highlighted && tab.status !== "loading"
 }
 
 function isLoadedWebTab(tab) {

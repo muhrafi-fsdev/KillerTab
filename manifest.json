@@ -2,9 +2,9 @@
   "manifest_version": 3,
   "minimum_chrome_version": "121",
   "name": "KillerTab",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "author": "Akira Keiji",
-  "description": "Tidurkan tab latar, blokir iklan pihak ketiga, dan periksa link mencurigakan.",
+  "description": "Kelola tab dan cache browser, blokir iklan pihak ketiga, dan periksa link mencurigakan.",
   "permissions": [
     "alarms",
     "storage",
@@ -14,7 +14,8 @@
     "declarativeNetRequest"
   ],
   "optional_permissions": [
-    "management"
+    "management",
+    "browsingData"
   ],
   "incognito": "not_allowed",
   "background": {
