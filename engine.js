@@ -124,7 +124,8 @@ export function sameLoadedPage(tab, current) {
 }
 
 export function dueTime(record, settings) {
-  return Math.max(record.since + settings.delay * 60_000, record.retryAt ?? 0)
+  const delay = settings.delay === 0 ? 30_000 : settings.delay * 60_000
+  return Math.max(record.since + delay, record.retryAt ?? 0)
 }
 
 export function idleRecord(tab, previous, now) {

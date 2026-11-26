@@ -3,7 +3,7 @@
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=181818)
 ![HTML5](https://img.shields.io/badge/HTML5-C03919?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-663399?style=for-the-badge&logo=css&logoColor=white)
-[![Versi KillerTab 1.5.0](https://img.shields.io/badge/Versi-v1.5.0-245844?style=for-the-badge)](./manifest.json)
+[![Versi KillerTab 1.5.1](https://img.shields.io/badge/Versi-v1.5.1-245844?style=for-the-badge)](./manifest.json)
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-344563?style=for-the-badge&logo=googlechrome&logoColor=white)
 
 Ekstensi Manifest V3 untuk Chrome, Brave, dan browser Chromium yang kompatibel (Chromium 121+). Dibuat oleh **Akira Keiji** dengan JavaScript dan CSS tanpa dependensi.
@@ -19,7 +19,7 @@ Jika sudah memakai Tab Hening, salin isi folder hasil ekstrak ke folder ekstensi
 
 ## Cara pakai
 
-- Pilih **Langsung**, **5 menit**, **15 menit**, atau **30 menit**. Antrean muncul saat tidur otomatis aktif dan menampilkan hitung mundur untuk tab latar yang paling dekat dengan batas waktunya. Chromium bisa menunda alarm, misalnya saat laptop tidur.
+- Pilih **30 detik**, **5 menit**, **15 menit**, atau **30 menit**. Pilihan **Langsung** dari versi lama beralih ke **30 detik** agar perpindahan singkat antar-tab tidak langsung memicu pemuatan ulang. Antrean muncul saat tidur otomatis aktif. Chromium bisa menunda alarm, misalnya saat laptop tidur.
 - **Tidurkan sekarang** menidurkan hingga delapan tab latar yang memenuhi syarat di jendela yang terakhir kamu gunakan. Bisa dijalankan saat tidur otomatis dijeda atau dimatikan.
 - **Khusus tab duplikat** mencari URL yang sama persis di jendela itu. Satu salinan tetap dimuat. Tab aktif atau tab yang dilindungi diprioritaskan sebagai salinan yang tetap berjalan.
 - Di **Jeda & situs**, kamu bisa menjeda tidur otomatis selama 30 menit atau melanjutkannya kapan saja. Setelah lanjut, hitung mundur tab yang masih terbuka dimulai ulang. Tambahkan domain atau URL untuk melindungi situs dan subdomainnya dari peniduran manual maupun otomatis oleh KillerTab.
@@ -27,7 +27,7 @@ Jika sudah memakai Tab Hening, salin isi folder hasil ekstrak ke folder ekstensi
 - Tab aktif di setiap jendela, tab yang disematkan, tab yang terdengar memutar audio, tab yang sedang dimuat, halaman internal, dan tab yang ditandai tak boleh dibuang oleh browser dilewati.
 - **Tab terbuka** menampilkan jumlah tab di profil normal, termasuk jumlah yang sedang tidur. Klik nama tab untuk membukanya. Hitungan tidur dapat mencakup tab yang dibuang oleh penghemat memori bawaan.
 - **Ekstensi** membaca nama dan status ekstensi terpasang setelah kamu memberikan izin opsional. Fitur tidur otomatis tetap bisa dipakai tanpa izin ini. Izin dapat ditarik lewat opsi izin situs/ekstensi jika tersedia di browser, atau dengan memasang ulang ekstensi.
-- Persentase RAM dan CPU mengukur beban seluruh sistem. Mode **Live** memperbarui meter setiap lima detik selama panel utama terlihat. Matikan **Live**, lalu klik **Ukur** untuk mengambil satu sampel saat dibutuhkan.
+- Persentase RAM dan CPU mengukur beban seluruh sistem. Mode **Live** memperbarui meter setiap sepuluh detik selama panel utama terlihat. Matikan **Live**, lalu klik **Ukur** untuk mengambil satu sampel saat dibutuhkan.
 - Mesin tidur otomatis bergerak saat ada perubahan tab atau alarm. Sampai empat tab diproses per putaran otomatis dengan jeda minimal 30 detik jika masih ada antrean yang siap.
 - Gunakan **Alt + Shift + K** untuk membuka popup jika shortcut tersedia. Sesuaikan di menu **Keyboard shortcuts** pada halaman ekstensi.
 

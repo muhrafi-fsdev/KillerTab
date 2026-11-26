@@ -10,12 +10,15 @@ const ALARM = "next-tab-sleep"
 const AUTO_BATCH = 4
 const BATCH_INTERVAL = 30_000
 const RETRY_INTERVAL = 120_000
+const TAB_BATCH_DELAY = 100
 const ELIGIBLE = { active: false, discarded: false, pinned: false, audible: false, status: "complete" }
 const WATCHED = ["status", "url", "pinned", "audible", "discarded", "autoDiscardable", "splitViewId"]
 const activeTabs = new Map()
 
 let queue = Promise.resolve()
 let pending
+let batchTimer
+let batchQueued = false
 let settings
 let idle
 let batchAfter = 0
@@ -77,16 +80,22 @@ function changes(full = false) {
   return { full, alarm: false, activations: [], tabs: new Map(), resets: new Set() }
 }
 
+function dispatch() {
+  if (!pending || batchQueued) return
+  clearTimeout(batchTimer)
+  batchTimer = undefined
+  batchQueued = true
+  run(() => {
+    const work = pending
+    pending = undefined
+    batchQueued = false
+    return reconcile(work)
+  })
+}
+
 function enqueue({ full = false, alarm = false, activation, tabId, tab, reset = false } = {}) {
   if (!full && !alarm && settings && !isRunning(settings)) return
-  if (!pending) {
-    pending = changes()
-    run(async () => {
-      const work = pending
-      pending = undefined
-      await reconcile(work)
-    })
-  }
+  pending ??= changes()
   pending.full ||= full
   pending.alarm ||= alarm
   if (activation) pending.activations.push(activation)
@@ -94,6 +103,8 @@ function enqueue({ full = false, alarm = false, activation, tabId, tab, reset = 
     pending.tabs.set(tabId, tab)
     if (reset) pending.resets.add(tabId)
   }
+  if (full || alarm) dispatch()
+  else if (!batchQueued) batchTimer ??= setTimeout(dispatch, TAB_BATCH_DELAY)
 }
 
 async function getTab(id) {
@@ -149,24 +160,28 @@ async function syncTabs(work) {
 async function sleepDueTabs() {
   const now = Date.now()
   if (batchAfter > now) return
-  const due = Object.entries(idle)
-    .filter(([, record]) => dueTime(record, settings) <= now)
-    .sort((a, b) => dueTime(a[1], settings) - dueTime(b[1], settings))
+  const due = []
+  for (const id in idle) {
+    const deadline = dueTime(idle[id], settings)
+    if (deadline > now || (due.length === AUTO_BATCH && deadline >= due.at(-1).deadline)) continue
+    due.push({ tabId: Number(id), deadline })
+    due.sort((a, b) => a.deadline - b.deadline)
+    if (due.length > AUTO_BATCH) due.pop()
+  }
 
-  for (const [id] of due.slice(0, AUTO_BATCH)) {
-    const tabId = Number(id)
+  for (const { tabId } of due) {
     const current = await getTab(tabId)
     track(current, tabId, false, Date.now())
-    if (!idle[id] || pending?.resets.has(tabId) || dueTime(idle[id], settings) > Date.now()) continue
-    if (await discard(tabId)) setIdle(id, undefined)
-    else setIdle(id, { ...idle[id], retryAt: Date.now() + RETRY_INTERVAL })
+    if (!idle[tabId] || pending?.resets.has(tabId) || dueTime(idle[tabId], settings) > Date.now()) continue
+    if (await discard(tabId)) setIdle(tabId, undefined)
+    else setIdle(tabId, { ...idle[tabId], retryAt: Date.now() + RETRY_INTERVAL })
   }
   if (due.length >= AUTO_BATCH) setBatchAfter(Date.now() + BATCH_INTERVAL)
 }
 
 async function scheduleNext() {
   let earliest = Infinity
-  for (const record of Object.values(idle)) earliest = Math.min(earliest, dueTime(record, settings))
+  for (const id in idle) earliest = Math.min(earliest, dueTime(idle[id], settings))
   const ready = Math.max(earliest, batchAfter)
   await schedule(Number.isFinite(ready) ? Math.max(ready, Date.now() + 1000) : null)
 }
@@ -195,6 +210,7 @@ async function reconcile(work = changes(true)) {
   }
 
   await syncTabs(work)
+  if (!dirty && !work.full && !work.alarm && alarmTime > Date.now()) return
   await sleepDueTabs()
   await saveSession()
   await scheduleNext()
@@ -328,6 +344,7 @@ chrome.tabs.onUpdated.addListener((id, change, tab) => {
 chrome.runtime.onMessage.addListener((message, sender, respond) => {
   if (sender.id !== chrome.runtime.id || sender.url !== chrome.runtime.getURL("popup.html")) return
   if (typeof message?.type !== "string") return
+  dispatch()
   run(() => command(message)).then(respond, () => respond({ ok: false }))
   return true
 })

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "minimum_chrome_version": "121",
   "name": "KillerTab",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "author": "Akira Keiji",
   "description": "Kelola tab dan cache browser, blokir iklan pihak ketiga, dan periksa link mencurigakan.",
   "permissions": [

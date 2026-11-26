@@ -205,7 +205,7 @@ async function sampleSystem(generation, phase = "regular") {
   if (!quickSample && !settings.liveMetrics) return
   metricsTimer = setTimeout(
     () => sampleSystem(generation, quickSample ? "cpu-only" : "regular"),
-    quickSample ? 650 : 5000
+    quickSample ? 650 : 10_000
   )
 }
 
@@ -798,7 +798,7 @@ async function showExtensions() {
 function showHelp() {
   openDialog("Cara kerja")
   content.append(
-    node("p", "Tab latar yang ditidurkan tetap ada di bilah tab. Saat dibuka kembali, Chromium memuat ulang halamannya. Simpan draf atau sematkan tab penting sebelum memakai mode Langsung."),
+    node("p", "Tab latar yang ditidurkan tetap ada di bilah tab. Chromium memuat ulang halaman saat dibuka kembali. Simpan draf atau sematkan tab penting sebelum memakai jeda 30 detik."),
     node("p", "Tab aktif, tab sematan, tab yang terdengar memutar audio, dan halaman internal browser dilewati."),
     node("p", "Gunakan Tidurkan sekarang untuk mengosongkan tab latar segera. Di Jeda & situs, kamu bisa menjeda mesin dan melindungi situs penting."),
     node("p", "Adblock memfilter jaringan iklan pihak ketiga. Gunakan Pengecualian situs jika sebuah halaman perlu memuat jaringan tersebut."),
@@ -808,9 +808,11 @@ function showHelp() {
 }
 
 function scheduleSnapshot() {
-  if (document.hidden) return
-  clearTimeout(updateTimer)
-  updateTimer = setTimeout(loadSnapshot, 180)
+  if (document.hidden || updateTimer !== undefined) return
+  updateTimer = setTimeout(() => {
+    updateTimer = undefined
+    void loadSnapshot()
+  }, 400)
 }
 
 toggle.addEventListener("change", () => configure({ ...settings, enabled: toggle.checked }))
@@ -829,6 +831,7 @@ document.querySelector(".help").addEventListener("click", showHelp)
 dialog.addEventListener("close", () => updateMonitoring())
 document.addEventListener("visibilitychange", () => {
   clearTimeout(updateTimer)
+  updateTimer = undefined
   updateMonitoring()
   if (!document.hidden) void loadSnapshot()
 })
